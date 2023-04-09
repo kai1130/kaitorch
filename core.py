@@ -162,8 +162,7 @@ class Scalar:
         # Chain Rule: dL/da = dL/dy * dy/da * a'
         #                   = dL/dy * 1/a * a'
         def _backward():
-            eps = 1e-8  # add a small positive value
-            a.grad += y.grad * ((a.data + eps).__pow__(-1))
+            a.grad += y.grad * ((a.data + 1e-7).__pow__(-1))
         y._backward = _backward
 
         return y
