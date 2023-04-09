@@ -154,6 +154,7 @@ class Scalar:
         def _forward():
             _a = a.data
             _y = math.log(_a)
+
             return Scalar(_y, _in=(a, ), _op='ln')
         y = _forward()
 
@@ -161,7 +162,8 @@ class Scalar:
         # Chain Rule: dL/da = dL/dy * dy/da * a'
         #                   = dL/dy * 1/a * a'
         def _backward():
-            a.grad += y.grad * (y.data.__pow__(-1)) / a.data
+            eps = 1e-8  # add a small positive value
+            a.grad += y.grad * ((a.data + eps).__pow__(-1))
         y._backward = _backward
 
         return y

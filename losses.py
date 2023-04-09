@@ -3,7 +3,7 @@ from kaitorch.utils import unwrap
 from kaitorch.core import Scalar
 import numpy as np
 
-__all__ = ['mse', 'binary_crossentropy', 'categorical_crossentropy']
+__all__ = ['mse', 'binary_crossentropy']
 
 
 def mse():
@@ -12,10 +12,6 @@ def mse():
 
 def binary_crossentropy():
     return BinaryCrossEntropy()
-
-
-def categorical_crossentropy():
-    return CategoricalCrossEntropy()
 
 
 class MeanSquaredError:
@@ -37,43 +33,20 @@ class MeanSquaredError:
         return 'MeanSquaredError()'
 
 
-class BinaryCrossEntropy:
+class BinaryCrossentropy:
     def __init__(self):
         pass
 
-    def __call__(self, y: list, y_pred: list):
+    def __call__(self, y, y_pred):
 
-        pred_length = len(y_pred)
-
-        term_0 = sum(
-            (1-y_) * (1-y_p+1e-8).log() for y_, y_p in zip(y, y_pred)
-        )
-        term_1 = sum(
-            (y_) * (y_p+1e-8).log() for y_, y_p in zip(y, y_pred)
-        )
-        binary_crossentropy = -1 * (term_0 + term_1) / pred_length
-
-        return binary_crossentropy
+        loss = 0.0
+        for i in range(len(y)):
+            if y[i] == 1:
+                loss += -(y_pred[i]).log()
+            elif y[i] == 0:
+                loss += -(1 - y_pred[i]).log()
+        binary_crossentropy_loss = loss / len(y)
+        return binary_crossentropy_loss
 
     def __repr__(self):
-        return 'BinaryCrossEntropy()'
-
-
-class CategoricalCrossEntropy:
-    def __init__(self):
-        pass
-
-    def __call__(self, y:list, y_pred: list):
-
-        pred_length = len(y)
-
-        term_sums = 0
-        for i in pred_length:
-            term_sums = sum(y_ * math.log(y_p.data) for y_, y_p in zip(y, y_pred))
-
-        categorical_crossentropy = -1 * term_sums / pred_length
-
-        return unwrap(categorical_crossentropy)
-
-    def __repr__(self):
-        return 'CategoricalCrossEntropy()'
+        return 'BinaryCrossentropy()'
