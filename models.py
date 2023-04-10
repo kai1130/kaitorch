@@ -1,8 +1,5 @@
 import kaitorch
 
-from kaitorch import activations as A
-from kaitorch import functional as F
-
 from kaitorch.core import Module, Scalar, Optimizer
 from kaitorch.layers import Dropout
 from kaitorch.graph import plot_model

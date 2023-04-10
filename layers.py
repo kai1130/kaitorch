@@ -1,5 +1,4 @@
 import random
-import kaitorch
 from kaitorch.utils import unwrap
 from kaitorch.core import Scalar, Module, Initializer
 from kaitorch import activations as A

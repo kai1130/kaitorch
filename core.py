@@ -1,5 +1,4 @@
 import math
-import random
 import kaitorch.activations as A
 
 __all__ = ['Scalar', 'Module']
