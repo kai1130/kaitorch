@@ -11,7 +11,7 @@ def mse():
 
 
 def binary_crossentropy():
-    return BinaryCrossEntropy()
+    return BinaryCrossentropy()
 
 
 def categorical_crossentropy():

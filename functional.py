@@ -99,17 +99,18 @@ def d_ELU(x, alpha=1.0):
     return out
 
 
-def swish(x, β=1):
+def swish(x, beta=1.0):
 
     # Operation: y = x * sigmoid(β * x)
-    out = x * sigmoid(β * x)
+    out = x * sigmoid(x * beta)
     return out
 
 
-def d_swish(x, β=1):
+def d_swish(x, beta=1.0):
 
     # Deriv: dy/dx = swish(x, β) + sigmoid(β * x) * (1 - swish(x, β))
     # Chain: dL/dx = dL/dy * dy/dx
     #              = dL/dy * swish(x, β) + sigmoid(β * x) * (1 - swish(x, β))
-    out = swish(x, β) + sigmoid(β * x) * (1 - swish(x, β))
+    out = swish(x, beta) + sigmoid(beta * x) * (1 - swish(x, beta))
     return out
+

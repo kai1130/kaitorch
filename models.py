@@ -3,7 +3,7 @@ import kaitorch
 from kaitorch import activations as A
 from kaitorch import functional as F
 
-from kaitorch.core import Module
+from kaitorch.core import Module, Scalar
 from kaitorch.layers import Dropout
 from kaitorch.graph import plot_model
 from kaitorch.utils import ffill, unwrap, wrap
@@ -89,13 +89,13 @@ class Sequential(Module):
                 self.compiled = True
             else:
                 raise Exception(
-                    f'[Unable to Compile] - Optimizer and Loss Function must be specified'
+                    '[Unable to Compile] - Optimizer and Loss Function must be specified'
                 )
 
     def step(self, **optimizer_params):
 
         if not self.compiled:
-            raise Exception(f'[Missing Optimizer] - Model has not been compiled')
+            raise Exception('[Missing Optimizer] - Model has not been compiled')
 
         for p in self.parameters():
             self.optimizer(p)
@@ -161,4 +161,7 @@ class Sequential(Module):
         if as_scalar:
             return [y for y in y_pred]
         else:
-            return [y.data for y in y_pred]
+            if isinstance(y_pred[0], Scalar):
+                return [y.data for y in y_pred]
+            elif isinstance(y_pred[0][0], Scalar):
+                return [[y.data for y in row] for row in y_pred]

@@ -1,21 +1,30 @@
 import random
 from kaitorch.utils import unwrap
 from kaitorch.core import Scalar, Module
+from kaitorch import activations as A
 
 
 class Dense(Module):
 
     class Node:
 
-        def __init__(self, nin, activation):
-            self.w = [Scalar(random.uniform(-1, 1)) for _ in range(nin)]
+        def __init__(self, nin, nout, activation):
+            self.w = [Scalar(random.uniform(-1, 1)) for _ in range(nin)] # uniform
+
+            # Xavier
+            # [Scalar(random.uniform(-1/math.sqrt(nin), 1/math.sqrt(nin))) for _ in range(nin)]
+
+            # He
+            # [Scalar(random.uniform(-1, 1)) for _ in range(nin)]
+            # random.gauss(mu, sigma)
+
             self.b = Scalar(random.uniform(-1, 1))
             self.a = activation
 
         def __call__(self, x):
             x = [x] if isinstance(x, Scalar) else x
             signal = sum((wi*xi for wi, xi in zip(self.w, x)), self.b)
-            if self.a:
+            if self.a and self.a != 'softmax':
                 signal = signal.activation(self.a)
             return signal
 
@@ -37,11 +46,13 @@ class Dense(Module):
     def __build__(self, nins):
         self.nins = nins
         self.nodes = [
-            self.Node(self.nins, self.activation) for _ in range(self.nouts)
+            self.Node(self.nins, self.nouts, self.activation) for _ in range(self.nouts)
         ]
 
     def __call__(self, x):
         outs = [n(x) for n in self.nodes]
+        if self.activation == 'softmax':
+            outs = getattr(A, self.activation)(outs)
         return unwrap(outs)
 
     def parameters(self):

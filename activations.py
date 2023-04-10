@@ -1,4 +1,4 @@
-__all__ = ['sigmoid', 'tanh', 'ReLU', 'LeakyReLU', 'ELU', 'swish']
+__all__ = ['sigmoid', 'tanh', 'ReLU', 'LeakyReLU', 'ELU', 'swish', 'softmax']
 
 import math
 import warnings
@@ -49,6 +49,8 @@ def swish(self, beta=None):
     def _backward():
         self.grad += F.d_swish(out.data, beta) * out.grad
     out._backward = _backward
+
+    return out
 
 
 def ReLU(self):
@@ -104,3 +106,11 @@ def ELU(self, alpha=None):
     out._backward = _backward
 
     return out
+
+
+def softmax(ins: list):
+
+    exps = [n.exp() for n in ins]
+    sums = sum([n.data for n in exps])
+    outs = [n/sums for n in exps]
+    return outs

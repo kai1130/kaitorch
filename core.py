@@ -109,7 +109,7 @@ class Scalar:
         # Operation: y = a ** b
         def _forward():
             _a = a.data
-            _y = _a ** b
+            _y = (_a + 1e-7) ** b  # don't divide by 0 kids :)
             return Scalar(_y, _in=(a,), _op=f'**{b}')
         y = _forward()
 
@@ -153,7 +153,7 @@ class Scalar:
         # Operation: y = ln(a)
         def _forward():
             _a = a.data
-            _y = math.log(_a)
+            _y = math.log(_a + 1e-7)
 
             return Scalar(_y, _in=(a, ), _op='ln')
         y = _forward()
@@ -162,7 +162,7 @@ class Scalar:
         # Chain Rule: dL/da = dL/dy * dy/da * a'
         #                   = dL/dy * 1/a * a'
         def _backward():
-            a.grad += y.grad * ((a.data + 1e-7).__pow__(-1))
+            a.grad += y.grad * (a.data.__pow__(-1))
         y._backward = _backward
 
         return y
