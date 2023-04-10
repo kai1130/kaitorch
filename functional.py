@@ -113,4 +113,3 @@ def d_swish(x, beta=1.0):
     #              = dL/dy * swish(x, β) + sigmoid(β * x) * (1 - swish(x, β))
     out = swish(x, beta) + sigmoid(beta * x) * (1 - swish(x, beta))
     return out
-

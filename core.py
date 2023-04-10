@@ -1,4 +1,5 @@
 import math
+import random
 import kaitorch.activations as A
 
 __all__ = ['Scalar', 'Module']
@@ -21,6 +22,10 @@ class Optimizer:
         self.lr = 0.01
         self.momentum = 0.9
         self.__dict__.update(kwargs)
+
+
+class Initializer:
+    pass
 
 
 class Scalar:
@@ -124,11 +129,11 @@ class Scalar:
 
     def __truediv__(a, b):
         # a / b = a * (b ** -1)
-        return a.__mul__(b.__pow__(-1))
+        return a.__mul__((b + 1e-7).__pow__(-1))
 
     def __rtruediv__(a, b):
         # b / a = b * (a ** -1)
-        return b.__mul__(a.__pow__(-1))
+        return b.__mul__((a + 1e-7).__pow__(-1))
 
     def exp(a):
 
@@ -162,7 +167,7 @@ class Scalar:
         # Chain Rule: dL/da = dL/dy * dy/da * a'
         #                   = dL/dy * 1/a * a'
         def _backward():
-            a.grad += y.grad * (a.data.__pow__(-1))
+            a.grad += y.grad * ((a.data + 1e-7).__pow__(-1))
         y._backward = _backward
 
         return y

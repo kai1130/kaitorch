@@ -1,24 +1,19 @@
 import random
+import kaitorch
 from kaitorch.utils import unwrap
-from kaitorch.core import Scalar, Module
+from kaitorch.core import Scalar, Module, Initializer
 from kaitorch import activations as A
+from kaitorch import initializers as I
 
 
 class Dense(Module):
 
     class Node:
 
-        def __init__(self, nin, nout, activation):
-            self.w = [Scalar(random.uniform(-1, 1)) for _ in range(nin)] # uniform
+        def __init__(self, nin, nout, activation, initializer):
 
-            # Xavier
-            # [Scalar(random.uniform(-1/math.sqrt(nin), 1/math.sqrt(nin))) for _ in range(nin)]
-
-            # He
-            # [Scalar(random.uniform(-1, 1)) for _ in range(nin)]
-            # random.gauss(mu, sigma)
-
-            self.b = Scalar(random.uniform(-1, 1))
+            self.w = [Scalar(initializer(nin, nout)) for _ in range(nin)]
+            self.b = Scalar(initializer(nin, nout))
             self.a = activation
 
         def __call__(self, x):
@@ -31,22 +26,41 @@ class Dense(Module):
         def parameters(self):
             return self.w + [self.b]
 
-    def __init__(self, nouts, activation=None):
+    def __init__(self, nouts, activation=None, initializer='glorot_uniform'):
         self.nins = None
         self.nouts = nouts
         self.nodes = None
         self.activation = activation
+        self.initializer = self.get_initializer(initializer)
+
+    def get_initializer(self, initializer):
+
+        if isinstance(initializer, str):
+            if initializer in I.__all__:
+                return getattr(I, initializer)()
+            else:
+                raise Exception(
+                    f'[Undefined Initializer] - Initializer "{initializer}" has not been implemented'
+                )
+        elif isinstance(initializer, Initializer):
+            return initializer
+        else:
+            raise Exception(
+                '[Undefined Initializer] - Object passed was not a str or Initializer'
+            )
 
     def __repr__(self):
+        repr_str = f'Dense(units={self.nouts})'
         if self.activation is not None:
-            return f'Dense(units={self.nouts}, activation={self.activation})'
-        else:
-            return f'Dense(units={self.nouts})'
+            repr_str += f', activation={self.activation})'
+        if self.initializer is not None:
+            repr_str += f', initializer={self.initializer}'
+        return repr_str
 
     def __build__(self, nins):
         self.nins = nins
         self.nodes = [
-            self.Node(self.nins, self.nouts, self.activation) for _ in range(self.nouts)
+            self.Node(self.nins, self.nouts, self.activation, self.initializer) for _ in range(self.nouts)
         ]
 
     def __call__(self, x):

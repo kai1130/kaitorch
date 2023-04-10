@@ -1,4 +1,4 @@
-__all__ = ['wrap', 'unwrap', 'ffill', 'as_categorical_predictions']
+__all__ = ['wrap', 'unwrap', 'ffill', 'as_onehot']
 
 
 def wrap(x):
@@ -23,6 +23,6 @@ def ffill(x: list):
     return x
 
 
-def as_categorical_predictions(y_pred: list):
+def as_onehot(y_pred: list):
     max_pred = max(y_pred)
     return [1 if x == max_pred else 0 for x in y_pred]

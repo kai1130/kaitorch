@@ -3,7 +3,7 @@ import kaitorch
 from kaitorch import activations as A
 from kaitorch import functional as F
 
-from kaitorch.core import Module, Scalar
+from kaitorch.core import Module, Scalar, Optimizer
 from kaitorch.layers import Dropout
 from kaitorch.graph import plot_model
 from kaitorch.utils import ffill, unwrap, wrap
@@ -68,8 +68,12 @@ class Sequential(Module):
                     raise Exception(
                         f'[Undefined Optimizer] - Optimizer "{optimizer}" has not been implemented'
                     )
-            else:
+            elif isinstance(optimizer, Optimizer):
                 self.optimizer = optimizer
+            else:
+                raise Exception(
+                    f'[Undefined Optimizer] - Object passed was not an Optimizer'
+                )
 
         def set_loss(loss):
             if isinstance(loss, str):

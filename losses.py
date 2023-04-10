@@ -1,7 +1,5 @@
-import math
-from kaitorch.utils import unwrap
-from kaitorch.core import Scalar
-import numpy as np
+# from kaitorch.core import Scalar
+
 
 __all__ = ['mse', 'binary_crossentropy', 'categorical_crossentropy']
 
