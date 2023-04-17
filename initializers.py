@@ -1,5 +1,6 @@
 import math
 import random
+import kaitorch.activations as A
 from kaitorch.core import Optimizer
 
 
@@ -157,7 +158,7 @@ class RandomUniform(Optimizer):
     def __call__(self, nin, nout):
 
         random_uniform_sample = random.uniform(
-            a=-9.95,
+            a=-0.05,
             b=0.05
         )
         return random_uniform_sample

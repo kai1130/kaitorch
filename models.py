@@ -1,5 +1,8 @@
 import kaitorch
 
+from kaitorch import activations as A
+from kaitorch import functional as F
+
 from kaitorch.core import Module, Scalar, Optimizer
 from kaitorch.layers import Dropout
 from kaitorch.graph import plot_model
@@ -26,6 +29,28 @@ class Sequential(Module):
             else:
                 x = layer(x)
         return unwrap(x)
+
+    def __repr__(self):
+        print([layer.parameters() for layer in self.layers])
+        return '\n'.join(str(layer) for layer in self.layers)
+
+    def summary(self):
+        print('_' * 115)
+        print('Layer (params)' + ' '*54 + 'Output Shape' + ' '*7 + 'Params = Weights + Biases')
+        print('=' * 115)
+        for layer_num, layer in enumerate(self.layers):
+            l_name = layer.__repr__()
+            l_output = f'(None, {layer.nouts})'
+            l_params = len(layer.parameters())
+            l_w = l_params - layer.nouts if l_params > 0 else 0
+            l_b = layer.nouts if l_params > 0 else 0
+
+            print(f'{l_name:<68}{l_output:<19}{l_params:<9}{l_w:<10}{l_b:<6}')
+            if layer_num != (len(self.layers) - 1):
+                print('_' * 115)
+        print('=' * 115)
+        print(f'Total Params: {sum([len(layer.parameters()) for layer in self.layers])}')
+        print('_' * 115)
 
     def add(self, layer):
 

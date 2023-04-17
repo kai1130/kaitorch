@@ -49,12 +49,12 @@ class Dense(Module):
             )
 
     def __repr__(self):
-        repr_str = f'Dense(units={self.nouts})'
+        repr_str = f'Dense(units={self.nouts}'
         if self.activation is not None:
-            repr_str += f', activation={self.activation})'
+            repr_str += f', activation={self.activation}'
         if self.initializer is not None:
             repr_str += f', initializer={self.initializer}'
-        return repr_str
+        return repr_str + ')'
 
     def __build__(self, nins):
         self.nins = nins
