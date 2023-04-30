@@ -126,7 +126,7 @@ class Sequential(Module):
         for p in self.parameters():
             self.optimizer(p)
 
-    def run_epoch(self, x, y, epoch=1, epochs=1, train=False):
+    def run_epoch(self, x, y=None, epoch=1, epochs=1, train=False):
 
         postfix_type = 'Train' if train is True else 'Eval'
 
@@ -139,10 +139,15 @@ class Sequential(Module):
         )
 
         y_pred = []
+
         for x_record in tqdm_x:
             y_pred.append(self.__call__(x_record, train=train))
-            run_loss = self.loss(y[:len(y_pred)], y_pred)
-            tqdm_x.set_postfix_str(f"{postfix_type} Loss: {run_loss.data:.4f}")
+            if y:
+                run_loss = self.loss(y[:len(y_pred)], y_pred)
+                tqdm_x.set_postfix_str(f"{postfix_type} Loss: {run_loss.data:.4f}")
+            else:
+                run_loss = None
+                tqdm_x.set_postfix_str(f"{postfix_type}")
 
         if train:
             self.zero_grad()
@@ -177,12 +182,12 @@ class Sequential(Module):
 
         return evaluation
 
-    def predict(self, x, y, as_scalar=False):
+    def predict(self, x, as_scalar=False):
 
         x, len_x = wrap(x)
         self.build(len_x)
 
-        y_pred, run_loss = self.run_epoch(x, y)
+        y_pred, run_loss = self.run_epoch(x)
 
         if as_scalar:
             return [y for y in y_pred]

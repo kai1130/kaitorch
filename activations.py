@@ -1,111 +1,153 @@
 __all__ = ['sigmoid', 'tanh', 'ReLU', 'LeakyReLU', 'ELU', 'swish', 'softmax']
 
-import math
 import warnings
 
 import kaitorch.functional as F
 from kaitorch.core import Scalar
 
 
-def sigmoid(self):
+class sigmoid:
 
-    def _forward():
-        y = F.sigmoid(self.data)
-        return Scalar(y, (self, ), 'sigmoid')
-    out = _forward()
+    def __init__(self):
+        pass
 
-    def _backward():
-        self.grad += F.d_sigmoid(out.data) * out.grad
-    out._backward = _backward
+    def __repr__(self):
+        return 'sigmoid'
 
-    return out
+    def __call__(self, scalar):
 
+        def _forward():
+            y = F.sigmoid(scalar.data)
+            return Scalar(y, (scalar, ), 'sigmoid')
+        out = _forward()
 
-def tanh(self):
+        def _backward():
+            scalar.grad += F.d_sigmoid(out.data) * out.grad
+        out._backward = _backward
 
-    def _forward():
-        y = F.tanh(self.data)
-        return Scalar(y, (self, ), 'tanh')
-    out = _forward()
-
-    def _backward():
-        self.grad += F.d_tanh(out.data) * out.grad
-    out._backward = _backward
-
-    return out
+        return out
 
 
-def swish(self, beta=None):
+class tanh:
 
-    if beta is None:
-        beta = 1
-        warnings.warn('Parameter {beta} not specified, using default value 1')
+    def __init__(self):
+        pass
 
-    def _forward():
-        y = F.swish(self.data, beta)
-        return Scalar(y, (self, ), 'swish')
-    out = _forward()
+    def __repr__(self):
+        return 'tanh'
 
-    def _backward():
-        self.grad += F.d_swish(out.data, beta) * out.grad
-    out._backward = _backward
+    def __call__(self, scalar):
 
-    return out
+        def _forward():
+            y = F.tanh(scalar.data)
+            return Scalar(y, (scalar, ), 'tanh')
+        out = _forward()
 
+        def _backward():
+            scalar.grad += F.d_tanh(out.data) * out.grad
+        out._backward = _backward
 
-def ReLU(self):
-
-    def _forward():
-        y = F.ReLU(self.data)
-        return Scalar(y, (self, ), 'ReLU')
-    out = _forward()
-
-    def _backward():
-        self.grad += F.d_ReLU(out.data) * out.grad
-    out._backward = _backward
-
-    return out
+        return out
 
 
-def LeakyReLU(self, alpha=None):
+class swish:
 
-    if alpha is None:
-        alpha = 0.01
-        warnings.warn(
-            'Parameter {alpha} not specified, using default value 0.01'
-        )
+    def __init__(self, beta=None):
 
-    def _forward():
-        y = F.LeakyReLU(self.data, alpha)
-        return Scalar(y, (self, ), 'LeakyReLU')
-    out = _forward()
+        self.beta = beta
+        if beta is None:
+            self.beta = 1
+            warnings.warn('Parameter {beta} not specified, using default value 1')
 
-    def _backward():
-        self.grad += F.d_LeakyReLU(out.data, alpha) * out.grad
-    out._backward = _backward
+    def __repr__(self):
+        return f'swish(beta={self.beta})'
 
-    return out
+    def __call__(self, scalar):
+
+        def _forward():
+            y = F.swish(scalar.data, self.beta)
+            return Scalar(y, (scalar, ), 'swish')
+        out = _forward()
+
+        def _backward():
+            scalar.grad += F.d_swish(out.data, self.beta) * out.grad
+        out._backward = _backward
+
+        return out
 
 
-def ELU(self, alpha=None):
+class ReLU:
 
-    if alpha is None:
-        alpha = 0.01
-        warnings.warn(
-            'Parameter {alpha} not specified, using default value 0.01'
-        )
+    def __init__(self):
+        pass
 
-    def _forward():
-        a = self.data
-        y = alpha * (math.exp(a) - 1) if a < 0 else a
-        return Scalar(y, (self, ), 'ELU')
-    out = _forward()
+    def __repr__(self):
+        return 'ReLU'
 
-    def _backward():
-        self.grad += F.d_ELU(out.data, alpha) * out.grad
-    out._backward = _backward
+    def __call__(self, scalar):
 
-    return out
+        def _forward():
+            y = F.ReLU(scalar.data)
+            return Scalar(y, (scalar, ), 'ReLU')
+        out = _forward()
+
+        def _backward():
+            scalar.grad += F.d_ReLU(out.data) * out.grad
+        out._backward = _backward
+
+        return out
+
+
+class LeakyReLU:
+
+    def __init__(self, alpha=None):
+
+        self.alpha = alpha
+        if alpha is None:
+            self.alpha = 0.01
+            warnings.warn('Parameter {alpha} not specified, using default value 0.01')
+
+    def __repr__(self):
+        return f'LeakyReLU(alpha={self.alpha})'
+
+    def __call__(self, scalar):
+
+        def _forward():
+            y = F.LeakyReLU(scalar.data, self.alpha)
+            return Scalar(y, (scalar, ), 'LeakyReLU')
+        out = _forward()
+
+        def _backward():
+            scalar.grad += F.d_LeakyReLU(out.data, self.alpha) * out.grad
+        out._backward = _backward
+
+        return out
+
+
+class ELU:
+
+    def __init__(self, alpha=None):
+
+        self.alpha = alpha
+        if alpha is None:
+            self.alpha = 0.01
+            warnings.warn('Parameter {alpha} not specified, using default value 0.01')
+
+    def __repr__(self):
+        return f'ELU(alpha={self.alpha})'
+
+    def __call__(self, scalar):
+
+        def _forward():
+            y = F.ELU(scalar.data, self.alpha)
+            return Scalar(y, (scalar, ), 'ELU')
+        out = _forward()
+
+        def _backward():
+            scalar.grad += F.d_ELU(out.data, self.alpha) * out.grad
+        out._backward = _backward
+
+        return out
 
 
 def softmax(ins: list):

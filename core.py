@@ -178,13 +178,13 @@ class Scalar:
         if isinstance(activation, str):
 
             if activation in available:
-                return getattr(A, activation)(self)
+                return getattr(A, activation)()(self)
             else:
                 raise Exception(f'Activation {activation} not in {available}')
 
         else:
             try:
-                return activation
+                return activation(self)
             except Exception:
                 raise Exception(f'Activation {activation} not in {available}')
 
