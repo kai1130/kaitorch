@@ -6,7 +6,11 @@ import kaitorch.functional as F
 from kaitorch.core import Scalar
 
 
-class sigmoid:
+class Activation:
+    pass
+
+
+class sigmoid(Activation):
 
     def __init__(self):
         pass
@@ -28,7 +32,7 @@ class sigmoid:
         return out
 
 
-class tanh:
+class tanh(Activation):
 
     def __init__(self):
         pass
@@ -50,7 +54,7 @@ class tanh:
         return out
 
 
-class swish:
+class swish(Activation):
 
     def __init__(self, beta=None):
 
@@ -60,7 +64,7 @@ class swish:
             warnings.warn('Parameter {beta} not specified, using default value 1')
 
     def __repr__(self):
-        return f'swish(beta={self.beta})'
+        return f'swish(β={self.beta})'
 
     def __call__(self, scalar):
 
@@ -76,7 +80,7 @@ class swish:
         return out
 
 
-class ReLU:
+class ReLU(Activation):
 
     def __init__(self):
         pass
@@ -98,7 +102,7 @@ class ReLU:
         return out
 
 
-class LeakyReLU:
+class LeakyReLU(Activation):
 
     def __init__(self, alpha=None):
 
@@ -108,7 +112,7 @@ class LeakyReLU:
             warnings.warn('Parameter {alpha} not specified, using default value 0.01')
 
     def __repr__(self):
-        return f'LeakyReLU(alpha={self.alpha})'
+        return f'LeakyReLU(α={self.alpha})'
 
     def __call__(self, scalar):
 
@@ -124,7 +128,7 @@ class LeakyReLU:
         return out
 
 
-class ELU:
+class ELU(Activation):
 
     def __init__(self, alpha=None):
 
@@ -134,7 +138,7 @@ class ELU:
             warnings.warn('Parameter {alpha} not specified, using default value 0.01')
 
     def __repr__(self):
-        return f'ELU(alpha={self.alpha})'
+        return f'ELU(α={self.alpha})'
 
     def __call__(self, scalar):
 

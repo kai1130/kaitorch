@@ -1,8 +1,5 @@
 import math
 import random
-import kaitorch.activations as A
-from kaitorch.core import Optimizer
-
 
 __all__ = [
     'glorot_uniform',
@@ -48,7 +45,11 @@ def random_normal():
     return RandomNormal()
 
 
-class GlorotUniform(Optimizer):
+class Initializer:
+    pass
+
+
+class GlorotUniform(Initializer):
 
     def __init__(self):
         pass
@@ -65,7 +66,7 @@ class GlorotUniform(Optimizer):
         return 'glorot_uniform'
 
 
-class GlorotNormal(Optimizer):
+class GlorotNormal(Initializer):
 
     def __init__(self):
         pass
@@ -82,7 +83,7 @@ class GlorotNormal(Optimizer):
         return 'glorot_normal'
 
 
-class HeUniform(Optimizer):
+class HeUniform(Initializer):
 
     def __init__(self):
         pass
@@ -99,7 +100,7 @@ class HeUniform(Optimizer):
         return 'he_uniform'
 
 
-class HeNormal(Optimizer):
+class HeNormal(Initializer):
 
     def __init__(self):
         pass
@@ -116,7 +117,7 @@ class HeNormal(Optimizer):
         return 'he_normal'
 
 
-class LecunUniform(Optimizer):
+class LecunUniform(Initializer):
 
     def __init__(self):
         pass
@@ -133,7 +134,7 @@ class LecunUniform(Optimizer):
         return 'lecun_uniform'
 
 
-class LecunNormal(Optimizer):
+class LecunNormal(Initializer):
 
     def __init__(self):
         pass
@@ -150,7 +151,7 @@ class LecunNormal(Optimizer):
         return 'lecun_normal'
 
 
-class RandomUniform(Optimizer):
+class RandomUniform(Initializer):
 
     def __init__(self):
         pass
@@ -167,7 +168,7 @@ class RandomUniform(Optimizer):
         return 'random_uniform'
 
 
-class RandomNormal(Optimizer):
+class RandomNormal(Initializer):
 
     def __init__(self):
         pass

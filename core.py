@@ -1,6 +1,7 @@
 import math
 import kaitorch.activations as A
 
+
 __all__ = ['Scalar', 'Module']
 
 
@@ -12,19 +13,6 @@ class Module:
 
     def parameters(self):
         return []
-
-
-class Optimizer:
-
-    def __init__(self, **kwargs):
-        # Default parameters for our optimizers
-        self.lr = 0.01
-        self.momentum = 0.9
-        self.__dict__.update(kwargs)
-
-
-class Initializer:
-    pass
 
 
 class Scalar:
@@ -45,7 +33,7 @@ class Scalar:
         a = a if isinstance(a, Scalar) else Scalar(a)
         b = b if isinstance(b, Scalar) else Scalar(b)
 
-        # Operation: y = a + b
+        # Calculation: y = a + b
         def _forward():
             _a = a.data
             _b = b.data
@@ -72,7 +60,7 @@ class Scalar:
         a = a if isinstance(a, Scalar) else Scalar(a)
         b = b if isinstance(b, Scalar) else Scalar(b)
 
-        # Operation: y = a * b
+        # Calculation: y = a * b
         def _forward():
             _a = a.data
             _b = b.data
@@ -110,10 +98,10 @@ class Scalar:
 
         assert isinstance(b, (int, float)), "Exponent is not int/float"
 
-        # Operation: y = a ** b
+        # Calculation: y = a ** b
         def _forward():
             _a = a.data
-            _y = (_a + 1e-7) ** b  # don't divide by 0 kids :)
+            _y = (_a + 1e-8) ** b  # don't divide by 0 kids :)
             return Scalar(_y, _in=(a,), _op=f'**{b}')
         y = _forward()
 
@@ -128,15 +116,15 @@ class Scalar:
 
     def __truediv__(a, b):
         # a / b = a * (b ** -1)
-        return a.__mul__((b + 1e-7).__pow__(-1))
+        return a.__mul__((b + 1e-8).__pow__(-1))
 
     def __rtruediv__(a, b):
         # b / a = b * (a ** -1)
-        return b.__mul__((a + 1e-7).__pow__(-1))
+        return b.__mul__((a + 1e-8).__pow__(-1))
 
     def exp(a):
 
-        # Operation: y = e ** a
+        # Calculation: y = e ** a
         def _forward():
             _a = a.data
             _y = math.exp(_a)
@@ -154,10 +142,10 @@ class Scalar:
 
     def log(a):
 
-        # Operation: y = ln(a)
+        # Calculation: y = ln(a)
         def _forward():
             _a = a.data
-            _y = math.log(_a + 1e-7)
+            _y = math.log(_a + 1e-8)
 
             return Scalar(_y, _in=(a, ), _op='ln')
         y = _forward()
@@ -166,7 +154,7 @@ class Scalar:
         # Chain Rule: dL/da = dL/dy * dy/da * a'
         #                   = dL/dy * 1/a * a'
         def _backward():
-            a.grad += y.grad * ((a.data + 1e-7).__pow__(-1))
+            a.grad += y.grad * ((a.data + 1e-8).__pow__(-1))
         y._backward = _backward
 
         return y
@@ -175,18 +163,14 @@ class Scalar:
 
         available = A.__all__
 
-        if isinstance(activation, str):
+        if isinstance(activation, str) and activation in available:
+            return getattr(A, activation)()(self)
 
-            if activation in available:
-                return getattr(A, activation)()(self)
-            else:
-                raise Exception(f'Activation {activation} not in {available}')
+        elif isinstance(activation, A.Activation):
+            return activation(self)
 
         else:
-            try:
-                return activation(self)
-            except Exception:
-                raise Exception(f'Activation {activation} not in {available}')
+            raise Exception(f'Activation {activation} not in {available}')
 
     def backward(self):
 

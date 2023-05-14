@@ -29,13 +29,14 @@ def trace(root):
     build(root)
     return nodes, edges
 
+
 def plot_model(root, filename=None):
     dot = Digraph(format='png', graph_attr={'rankdir': 'TB'})
 
     all_nodes = set()
     all_edges = set()
 
-    if isinstance(root, Scalar):
+    if not isinstance(root, list):
         root = [root]
 
     for r in root:

@@ -1,6 +1,15 @@
-from kaitorch.core import Scalar, Optimizer
+from kaitorch.core import Scalar
 
 __all__ = ['SGD', 'Momentum', 'Nesterov']
+
+
+class Optimizer:
+
+    def __init__(self, **kwargs):
+        # Default parameters for our optimizers
+        self.lr = 0.01
+        self.momentum = 0.9
+        self.__dict__.update(kwargs)
 
 
 # Stochastic Gradient Descent

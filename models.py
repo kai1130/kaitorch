@@ -20,7 +20,7 @@ class Sequential(Module):
         self.layers = layers if layers else []
         self.layer_sizes = [
             layer.nouts for layer in self.layers
-        ]if self.layers else []
+        ] if self.layers else []
 
     def __call__(self, x, train):
         for layer in self.layers:
@@ -36,7 +36,7 @@ class Sequential(Module):
 
     def summary(self):
         print('_' * 115)
-        print('Layer (params)' + ' '*54 + 'Output Shape' + ' '*7 + 'Params = Weights + Biases')
+        print('Layer (params)' + ' '*59 + 'Output Shape' + ' '*5 + 'Params = Weights + Biases')
         print('=' * 115)
         for layer_num, layer in enumerate(self.layers):
             l_name = layer.__repr__()
@@ -45,7 +45,7 @@ class Sequential(Module):
             l_w = l_params - layer.nouts if l_params > 0 else 0
             l_b = layer.nouts if l_params > 0 else 0
 
-            print(f'{l_name:<68}{l_output:<19}{l_params:<9}{l_w:<10}{l_b:<6}')
+            print(f'{l_name:<73}{l_output:<17}{l_params:<9}{l_w:<10}{l_b:<6}')
             if layer_num != (len(self.layers) - 1):
                 print('_' * 115)
         print('=' * 115)
@@ -75,7 +75,7 @@ class Sequential(Module):
         if not self.built:
             raise Exception('[Model Not Built] - Use Sequential.build(input_size) to build model')
         empty_input = self.__call__([0]*self.layer_sizes[0], train=False)
-        plot_model(empty_input)
+        return plot_model(empty_input)
 
     def parameters(self):
         return [p for layer in self.layers for p in layer.parameters()]
@@ -128,7 +128,7 @@ class Sequential(Module):
 
     def run_epoch(self, x, y=None, epoch=1, epochs=1, train=False):
 
-        postfix_type = 'Train' if train is True else 'Eval'
+        postfix_type = 'Train' if train is True else ''
 
         tqdm_x = tqdm(
             x,
