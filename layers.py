@@ -82,9 +82,8 @@ class Dropout(Module):
             self.p = 1 - dropout_rate
 
         def __call__(self, x, train):
-            if train is True:
-                mask = 1 if random.random() <= self.p else 0
-                return x * (1/self.p) * mask
+            if train:
+                return x * (1/self.p) if random.random() <= self.p else 0
             else:
                 return x
 

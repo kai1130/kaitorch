@@ -127,7 +127,7 @@ class Sequential(Module):
         for p in self.parameters():
             self.optimizer(p)
 
-    def run_epoch(self, x, y=None, epoch=1, epochs=1, train=False):
+    def run(self, x, y=None, epoch=1, epochs=1, train=False):
 
         postfix_type = 'Train' if train is True else ''
 
@@ -159,36 +159,36 @@ class Sequential(Module):
 
     def fit(self, x, y, epochs=1):
 
-        history = {'loss': []}
+        x = wrap(x)
+        self.build(len(x[0]))
 
-        x, len_x = wrap(x)
-        self.build(len_x)
+        history = {'loss': []}
 
         for epoch in range(1, epochs+1):
 
-            y_pred, run_loss = self.run_epoch(x, y, epoch, epochs, train=True)
+            y_pred, run_loss = self.run(x, y, epoch, epochs, train=True)
             history['loss'].append(run_loss.data)
 
         return history
 
     def evaluate(self, x, y):
 
+        x = wrap(x)
+        self.build(len(x[0]))
+
         evaluation = {'loss': []}
 
-        x, len_x = wrap(x)
-        self.build(len_x)
-
-        y_pred, run_loss = self.run_epoch(x, y)
+        y_pred, run_loss = self.run(x, y)
         evaluation['loss'].append(run_loss.data)
 
         return evaluation
 
     def predict(self, x, as_scalar=False):
 
-        x, len_x = wrap(x)
-        self.build(len_x)
+        x = wrap(x)
+        self.build(len(x[0]))
 
-        y_pred, run_loss = self.run_epoch(x)
+        y_pred, run_loss = self.run(x)
 
         if as_scalar:
             return [y for y in y_pred]

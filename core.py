@@ -99,7 +99,7 @@ class Scalar:
         # Calculation: y = a ** b
         def _forward():
             _a = a.data
-            _y = (_a + 1e-8) ** b  # don't divide by 0 kids :)
+            _y = (_a + 1e-8) ** b  # don't divide by 0 :)
             return Scalar(_y, _in=(a,), _op=f'**{b}')
         y = _forward()
 

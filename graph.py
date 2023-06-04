@@ -4,19 +4,6 @@ import kaitorch.activations as A
 from kaitorch.core import Scalar
 
 
-def build_topo(v):
-
-    topo = []
-    visited = set()
-
-    if v not in visited:
-        visited.add(v)
-        for child in v._prev:
-            build_topo(child)
-        topo.append(v)
-    return topo
-
-
 def trace(root):
     nodes, edges = set(), set()
 
