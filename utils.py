@@ -2,9 +2,11 @@ __all__ = ['wrap', 'unwrap', 'ffill', 'as_onehot']
 
 
 def wrap(x):
-    if isinstance(x[0], int) or isinstance(x[0], float):
+    from kaitorch.core import Scalar
+
+    if isinstance(x, (int, float, Scalar)):
         x = [x]
-    return x, len(x[0])
+    return x
 
 
 def unwrap(out):

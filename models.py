@@ -3,10 +3,11 @@ import kaitorch
 from kaitorch import activations as A
 from kaitorch import functional as F
 
-from kaitorch.core import Module, Scalar, Optimizer
+from kaitorch.core import Module, Scalar
 from kaitorch.layers import Dropout
 from kaitorch.graph import plot_model
 from kaitorch.utils import ffill, unwrap, wrap
+from kaitorch.optimizers import Optimizer
 
 from tqdm import tqdm
 
@@ -20,7 +21,7 @@ class Sequential(Module):
         self.layers = layers if layers else []
         self.layer_sizes = [
             layer.nouts for layer in self.layers
-        ] if self.layers else []
+            ] if self.layers else []
 
     def __call__(self, x, train):
         for layer in self.layers:
@@ -99,8 +100,8 @@ class Sequential(Module):
 
         def set_loss(loss):
             if isinstance(loss, str):
-                if loss in kaitorch.loss.__all__:
-                    self.loss = getattr(kaitorch.loss, loss)
+                if loss in kaitorch.losses.__all__:
+                    self.loss = getattr(kaitorch.losses, loss)()
                 else:
                     raise Exception(
                         f'[Undefined Loss Function] - Loss Function "{loss}" has not been implemented'

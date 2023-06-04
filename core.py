@@ -1,6 +1,4 @@
 import math
-import kaitorch.activations as A
-
 
 __all__ = ['Scalar', 'Module']
 
@@ -160,6 +158,8 @@ class Scalar:
         return y
 
     def activation(self, activation):
+
+        import kaitorch.activations as A
 
         available = A.__all__
 

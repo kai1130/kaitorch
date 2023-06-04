@@ -1,5 +1,5 @@
-# from kaitorch.core import Scalar
-
+from kaitorch.utils import wrap
+from kaitorch.core import Scalar
 
 __all__ = ['mse', 'binary_crossentropy', 'categorical_crossentropy']
 
@@ -21,12 +21,18 @@ class MeanSquaredError:
     def __init__(self):
         pass
 
-    def __call__(self, y: list, y_pred: list):
+    def __call__(self, ys: list, y_preds: list):
 
-        pred_length = len(y)
+        ys, y_preds = wrap(ys), wrap(y_preds)
+
+        # 1/N
+        pred_length = len(ys)
+
+        # Summation Term
         squared_error = sum(
-            (y_record - y_out)**2 for y_record, y_out in zip(y, y_pred)
-        )
+            (y - y_pred)**2 for y, y_pred in zip(ys, y_preds))
+
+        # Mean Squared Error
         mean_squared_error = squared_error/pred_length
 
         return mean_squared_error
@@ -36,18 +42,32 @@ class MeanSquaredError:
 
 
 class BinaryCrossentropy:
+
     def __init__(self):
         pass
 
-    def __call__(self, y, y_pred):
+    def __call__(self, ys, y_preds):
 
         loss = 0.0
-        for i in range(len(y)):
-            if y[i] == 1:
-                loss += -(y_pred[i]).log()
-            elif y[i] == 0:
-                loss += -(1 - y_pred[i]).log()
-        binary_crossentropy_loss = loss / len(y)
+        ys, y_preds = wrap(ys), wrap(y_preds)
+
+        # 1/N
+        pred_length = len(ys)
+
+        # Summation term - could've done this more concisely but wanted to make the logic clear
+        for y, y_pred in zip(ys, y_preds):
+
+            # Active Left Term
+            if y == 1:
+                loss += -(y_pred).log()
+
+            # Active Right Term
+            elif y == 0:
+                loss += -(1 - y_pred).log()
+
+        # Binary Cross Entropy
+        binary_crossentropy_loss = loss / pred_length
+
         return binary_crossentropy_loss
 
     def __repr__(self):
@@ -55,18 +75,36 @@ class BinaryCrossentropy:
 
 
 class CategoricalCrossentropy:
+
     def __init__(self):
         pass
 
-    def __call__(self, y, y_pred):
+    def __call__(self, ys, y_preds):
+
         loss = 0.0
-        for i in range(len(y)):
-            for j in range(len(y[i])):
-                if y[i][j] == 1:
-                    loss += -(y_pred[i][j]).log()
-                elif y[i][j] == 0:
-                    loss += -(1 - y_pred[i][j]).log()
-        categorical_crossentropy_loss = loss / len(y)
+        if isinstance(ys[0], (int, float, Scalar)):
+            ys, y_preds = [ys], [y_preds]
+
+        # 1/N
+        pred_length = len(ys)
+
+        # Outer summation term
+        for y_ohe, y_pred_ohe in zip(ys, y_preds):
+
+            # Inner summation term
+            for y, y_pred in zip(y_ohe, y_pred_ohe):
+
+                # if j is the actual class
+                if y == 1:
+                    loss += -(y_pred).log()
+
+                # if j is not the actual class
+                elif y == 0:
+                    loss += -(1 - y_pred).log()
+
+        # Categorical Cross Entropy
+        categorical_crossentropy_loss = loss / pred_length
+
         return categorical_crossentropy_loss
 
     def __repr__(self):
