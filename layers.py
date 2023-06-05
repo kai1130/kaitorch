@@ -95,18 +95,18 @@ class Dropout(Module):
         self.nins = None
         self.nouts = None
         self.nodes = None
-        self.p = dropout_rate
+        self.q = dropout_rate
 
-        if self.p < 0 or self.p > 1:
+        if self.q < 0 or self.q > 1:
             raise ValueError("p must be a probability")
 
     def __repr__(self):
-        return f'Dropout(dropout_rate={self.p})'
+        return f'Dropout(dropout_rate={self.q})'
 
     def __build__(self, nins):
         self.nins = nins
         self.nouts = nins
-        self.nodes = [self.Node(self.p) for _ in range(self.nins)]
+        self.nodes = [self.Node(self.q) for _ in range(self.nins)]
 
     def __call__(self, x, train):
         outs = [n(xi, train) for n, xi in zip(self.nodes, x)]
