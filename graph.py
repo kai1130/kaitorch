@@ -13,6 +13,7 @@ def trace(root):
             for child in v._prev:
                 edges.add((child, v))
                 build(child)
+
     build(root)
     return nodes, edges
 

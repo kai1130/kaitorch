@@ -37,6 +37,7 @@ class Scalar:
             _b = b.data
             _y = _a + _b
             return Scalar(_y, _in=(a, b), _op='+')
+
         y = _forward()
 
         # Derivative: dy/da = 1
@@ -45,6 +46,7 @@ class Scalar:
         def _backward():
             a.grad += y.grad
             b.grad += y.grad
+
         y._backward = _backward
 
         return y
@@ -64,6 +66,7 @@ class Scalar:
             _b = b.data
             _y = _a * _b
             return Scalar(_y, _in=(a, b), _op='*')
+
         y = _forward()
 
         # Derivative: dy/da = b
@@ -72,6 +75,7 @@ class Scalar:
         def _backward():
             a.grad += y.grad * b.data
             b.grad += y.grad * a.data
+
         y._backward = _backward
 
         return y
@@ -101,6 +105,7 @@ class Scalar:
             _a = a.data
             _y = (_a + 1e-8) ** b  # don't divide by 0 :)
             return Scalar(_y, _in=(a,), _op=f'**{b}')
+
         y = _forward()
 
         # Derivative: dy/da = b * (a ** (b-1))
@@ -108,6 +113,7 @@ class Scalar:
         #                   = dL/dy * b * (a ** (b-1))
         def _backward():
             a.grad += y.grad * (b * a.data ** (b - 1))
+
         y._backward = _backward
 
         return y
@@ -127,6 +133,7 @@ class Scalar:
             _a = a.data
             _y = math.exp(_a)
             return Scalar(_y, _in=(a, ), _op='exp')
+
         y = _forward()
 
         # Derivative: dy/da = y
@@ -134,6 +141,7 @@ class Scalar:
         #                   = dL/dy * y
         def _backward():
             a.grad += y.grad * y.data
+
         y._backward = _backward
 
         return y
@@ -144,8 +152,8 @@ class Scalar:
         def _forward():
             _a = a.data
             _y = math.log(_a + 1e-8)
-
             return Scalar(_y, _in=(a, ), _op='ln')
+
         y = _forward()
 
         # Derivative: dy/da = 1/a * a'
@@ -153,6 +161,7 @@ class Scalar:
         #                   = dL/dy * 1/a * a'
         def _backward():
             a.grad += y.grad * ((a.data + 1e-8).__pow__(-1))
+
         y._backward = _backward
 
         return y

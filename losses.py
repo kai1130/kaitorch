@@ -25,7 +25,7 @@ class MeanSquaredError:
 
         ys, y_preds = wrap(ys), wrap(y_preds)
 
-        # 1/N
+        # for 1/N
         pred_length = len(ys)
 
         # Summation Term
@@ -51,7 +51,7 @@ class BinaryCrossentropy:
         loss = 0.0
         ys, y_preds = wrap(ys), wrap(y_preds)
 
-        # 1/N
+        # for 1/N
         pred_length = len(ys)
 
         # Summation term - could've done this more concisely but wanted to make the logic clear

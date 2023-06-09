@@ -19,9 +19,7 @@ class Sequential(Module):
         self.compiled = False
 
         self.layers = layers if layers else []
-        self.layer_sizes = [
-            layer.nouts for layer in self.layers
-            ] if self.layers else []
+        self.layer_sizes = [layer.nouts for layer in self.layers] if self.layers else []
 
     def __call__(self, x, train):
         for layer in self.layers:
@@ -36,22 +34,30 @@ class Sequential(Module):
         return '\n'.join(str(layer) for layer in self.layers)
 
     def summary(self):
-        print('_' * 115)
-        print('Layer (params)' + ' '*59 + 'Output Shape' + ' '*5 + 'Params = Weights + Biases')
-        print('=' * 115)
+        print("_" * 115)
+        print(
+            "Layer (params)"
+            + " " * 59
+            + "Output Shape"
+            + " " * 5
+            + "Params = Weights + Biases"
+        )
+        print("=" * 115)
         for layer_num, layer in enumerate(self.layers):
             l_name = layer.__repr__()
-            l_output = f'(None, {layer.nouts})'
+            l_output = f"(None, {layer.nouts})"
             l_params = len(layer.parameters())
             l_w = l_params - layer.nouts if l_params > 0 else 0
             l_b = layer.nouts if l_params > 0 else 0
 
-            print(f'{l_name:<73}{l_output:<17}{l_params:<9}{l_w:<10}{l_b:<6}')
+            print(f"{l_name:<73}{l_output:<17}{l_params:<9}{l_w:<10}{l_b:<6}")
             if layer_num != (len(self.layers) - 1):
-                print('_' * 115)
-        print('=' * 115)
-        print(f'Total Params: {sum([len(layer.parameters()) for layer in self.layers])}')
-        print('_' * 115)
+                print("_" * 115)
+        print("=" * 115)
+        print(
+            f"Total Params: {sum([len(layer.parameters()) for layer in self.layers])}"
+        )
+        print("_" * 115)
 
     def add(self, layer):
 
@@ -74,7 +80,9 @@ class Sequential(Module):
     def plot(self):
 
         if not self.built:
-            raise Exception('[Model Not Built] - Use Sequential.build(input_size) to build model')
+            raise Exception(
+                '[Model Not Built] - Use Sequential.build(input_size) to build model'
+            )
         empty_input = self.__call__([0]*self.layer_sizes[0], train=False)
         return plot_model(empty_input)
 

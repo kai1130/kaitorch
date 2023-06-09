@@ -23,10 +23,12 @@ class sigmoid(Activation):
         def _forward():
             y = F.sigmoid(scalar.data)
             return Scalar(y, (scalar, ), 'sigmoid')
+
         out = _forward()
 
         def _backward():
             scalar.grad += F.d_sigmoid(out.data) * out.grad
+
         out._backward = _backward
 
         return out
@@ -45,10 +47,12 @@ class tanh(Activation):
         def _forward():
             y = F.tanh(scalar.data)
             return Scalar(y, (scalar, ), 'tanh')
+
         out = _forward()
 
         def _backward():
             scalar.grad += F.d_tanh(out.data) * out.grad
+
         out._backward = _backward
 
         return out
@@ -71,10 +75,12 @@ class swish(Activation):
         def _forward():
             y = F.swish(scalar.data, self.beta)
             return Scalar(y, (scalar, ), 'swish')
+
         out = _forward()
 
         def _backward():
             scalar.grad += F.d_swish(out.data, self.beta) * out.grad
+
         out._backward = _backward
 
         return out
@@ -93,10 +99,12 @@ class ReLU(Activation):
         def _forward():
             y = F.ReLU(scalar.data)
             return Scalar(y, (scalar, ), 'ReLU')
+
         out = _forward()
 
         def _backward():
             scalar.grad += F.d_ReLU(out.data) * out.grad
+
         out._backward = _backward
 
         return out
@@ -119,10 +127,12 @@ class LeakyReLU(Activation):
         def _forward():
             y = F.LeakyReLU(scalar.data, self.alpha)
             return Scalar(y, (scalar, ), 'LeakyReLU')
+
         out = _forward()
 
         def _backward():
             scalar.grad += F.d_LeakyReLU(out.data, self.alpha) * out.grad
+
         out._backward = _backward
 
         return out
@@ -145,10 +155,12 @@ class ELU(Activation):
         def _forward():
             y = F.ELU(scalar.data, self.alpha)
             return Scalar(y, (scalar, ), 'ELU')
+
         out = _forward()
 
         def _backward():
             scalar.grad += F.d_ELU(out.data, self.alpha) * out.grad
+
         out._backward = _backward
 
         return out
